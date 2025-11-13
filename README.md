@@ -1,3 +1,9 @@
+# Pokedex Test
+Live Demo
+https://pokedex-bla-8tlv.vercel.app/
+
+<img width="1905" height="925" alt="image" src="https://github.com/user-attachments/assets/c4a55921-08c4-4356-aa0f-319850f67dcd" />
+
 ## Architecture Overview
 
 - **Tech stack**: Next.js 16 App Router, React 19, Tailwind CSS 4, and TypeScript. The root layout (`app/layout.tsx`) wires the Poppins font plus shared styles from `app/globals.css`.
