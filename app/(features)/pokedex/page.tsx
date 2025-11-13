@@ -26,7 +26,7 @@ export default function PokedexPage() {
   }, [filterBy, query]);
 
   return (
-    <main className="min-h-screen bg-[#111111] px-2 py-6 text-slate-900 sm:px-6 lg:px-10">
+    <main className="min-h-screen bg-[#222222] px-2 py-6 text-slate-900 sm:px-6 lg:px-10">
       <div className="w-full">
         <div className="rounded-[40px] bg-[#f7f6f4] shadow-[0_35px_70px_rgba(0,0,0,0.55)]">
           <PokedexHeader
