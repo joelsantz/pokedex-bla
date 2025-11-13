@@ -1,4 +1,4 @@
-import { FiSearch } from "react-icons/fi";
+import Image from "next/image";
 
 type PokedexHeaderProps = {
   query: string;
@@ -11,11 +11,15 @@ export function PokedexHeader({ query, onQueryChange, total }: PokedexHeaderProp
     <header className="rounded-t-[38px] bg-[var(--primary)] px-8 py-8 text-white">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="relative h-14 w-14 rounded-full bg-white shadow-[inset_0_4px_8px_rgba(0,0,0,0.2)] flex items-center justify-center">
-            <div className="h-10 w-10 rounded-full border-4 border-[var(--primary)]" />
-            <span className="absolute -left-3 top-1/2 h-3 w-3 -translate-y-1/2 rounded-full bg-white shadow" />
-          </div>
-          <div>
+          <div className="flex items-center gap-3">
+            <Image
+              src="/Pokeball.svg"
+              alt="Pokédex icon"
+              width={48}
+              height={48}
+              className="h-12 w-12"
+              priority
+            />
             <h1 className="text-4xl font-black tracking-tight">Pokédex</h1>
           </div>
         </div>
@@ -27,14 +31,21 @@ export function PokedexHeader({ query, onQueryChange, total }: PokedexHeaderProp
       <div className="mt-6 flex flex-col gap-4 sm:flex-row">
         <div className="flex flex-1 items-center gap-3 rounded-full bg-white px-5 py-3 text-[var(--primary)] shadow-[inset_0_4px_12px_rgba(0,0,0,0.15)]">
           <div className="relative flex-1">
-            <span className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-[var(--primary)]">
-              <FiSearch className="h-5 w-5" aria-hidden="true" />
+            <span className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2">
+              <Image
+                src="/search.svg"
+                alt=""
+                width={20}
+                height={20}
+                className="h-5 w-5"
+                aria-hidden="true"
+              />
             </span>
             <input
               value={query}
               onChange={event => onQueryChange(event.target.value)}
               placeholder="Search"
-              className="w-full bg-transparent pl-8 text-base font-semibold tracking-wide text-[rgba(var(--primary-rgb),0.9)] placeholder:text-[rgba(var(--primary-rgb),0.6)] focus:outline-none"
+              className="w-full bg-transparent pl-8 text-base tracking-wide text-[rgba(var(--primary-rgb),0.9)] placeholder:text-[rgba(var(--primary-rgb),0.6)] focus:outline-none"
             />
           </div>
         </div>
