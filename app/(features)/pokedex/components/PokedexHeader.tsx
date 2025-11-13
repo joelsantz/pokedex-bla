@@ -55,8 +55,25 @@ export function PokedexHeader({ query, onQueryChange, total, filterBy, onFilterC
             <h1 className="text-4xl font-black tracking-tight">Pokédex</h1>
           </div>
         </div>
-        <div className="flex items-center gap-2 rounded-full bg-white/15 px-6 py-3 text-sm font-semibold text-white/80 uppercase tracking-[0.3em]">
-          {total} Pokemon
+        <div className="flex items-center gap-4 rounded-full bg-white/15 px-6 py-3 text-xs font-semibold tracking-[0.35em] text-white/80">
+          <nav className="flex items-center gap-4 text-[0.7rem] tracking-[0.2em]">
+            <a
+              href="https://pokeapi.co/"
+              target="_blank"
+              rel="noreferrer"
+              className="transition hover:text-white"
+            >
+              API
+            </a>
+            <a
+              href="https://github.com/joelsantz/pokedex-bla"
+              target="_blank"
+              rel="noreferrer"
+              className="transition hover:text-white"
+            >
+              GITHUB
+            </a>
+          </nav>
         </div>
       </div>
 
@@ -117,9 +134,9 @@ export function PokedexHeader({ query, onQueryChange, total, filterBy, onFilterC
             />
           </button>
           {isFilterOpen && (
-            <div className="absolute right-0 z-20 mt-3 w-48 rounded-[26px] bg-[var(--primary)] p-1 shadow-[0_25px_55px_rgba(0,0,0,0.45)]">
+            <div className="absolute right-0 z-20 mt-3 w-48 rounded-[20px] bg-white p-4 shadow-lg shadow-slate-200">
               <div className="rounded-[22px] bg-white px-4 py-4">
-                <p className="text-sm font-semibold uppercase tracking-tight text-[var(--primary)]">Filter by:</p>
+                <p className="text-sm text-[var(--primary)]">Filter by:</p>
                 <div className="mt-4 flex flex-col gap-2">
                   {filterOptions.map(option => {
                     const selected = option.value === filterBy;
