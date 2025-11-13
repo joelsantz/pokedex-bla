@@ -12,6 +12,16 @@ function jsonResponse(data: unknown, init?: ResponseInit) {
   return new Response(JSON.stringify(data), { ...init, headers });
 }
 
+function extractUrl(input: RequestInfo | URL) {
+  if (typeof input === "string") {
+    return input;
+  }
+  if (input instanceof URL) {
+    return input.toString();
+  }
+  return input.url;
+}
+
 describe("GET /api/pokedex", () => {
   it("returns a paginated list of Pokémon with normalized data", async () => {
     const listResponse = {
@@ -48,7 +58,7 @@ describe("GET /api/pokedex", () => {
     };
 
     const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
-      const url = typeof input === "string" ? input : input.url ?? input.toString();
+      const url = extractUrl(input);
       if (url === `${POKE_API_BASE}/pokemon?offset=0&limit=2`) {
         return jsonResponse(listResponse);
       }
@@ -126,7 +136,7 @@ describe("GET /api/pokedex", () => {
     });
 
     const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
-      const url = typeof input === "string" ? input : input.url ?? input.toString();
+      const url = extractUrl(input);
       if (url === `${POKE_API_BASE}/pokemon?offset=0&limit=2000`) {
         return jsonResponse(searchPool);
       }

@@ -12,6 +12,16 @@ function jsonResponse(data: unknown, init?: ResponseInit) {
   return new Response(JSON.stringify(data), { ...init, headers });
 }
 
+function extractUrl(input: RequestInfo | URL) {
+  if (typeof input === "string") {
+    return input;
+  }
+  if (input instanceof URL) {
+    return input.toString();
+  }
+  return input.url;
+}
+
 describe("GET /api/pokemon/[identifier]", () => {
   it("returns a rich pokemon detail payload for a valid identifier", async () => {
     const pokemon = {
@@ -69,7 +79,7 @@ describe("GET /api/pokemon/[identifier]", () => {
     };
 
     const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
-      const url = typeof input === "string" ? input : input.url ?? input.toString();
+      const url = extractUrl(input);
       if (url === `${POKE_API_BASE}/pokemon/25`) {
         return jsonResponse(pokemon);
       }

@@ -12,5 +12,6 @@ export default defineConfig({
     globals: true,
     environment: "node",
     setupFiles: ["./vitest.setup.ts"],
+    include: ["tests/routes/**/*.test.ts"],
   },
 });
