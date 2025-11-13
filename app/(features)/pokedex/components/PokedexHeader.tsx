@@ -18,7 +18,7 @@ const filterOptions: Array<{ label: string; value: SearchFilter; icon: string }>
   { label: "Name", value: "name", icon: "/text_format.svg" },
 ];
 
-export function PokedexHeader({ query, onQueryChange, total, filterBy, onFilterChange }: PokedexHeaderProps) {
+export function PokedexHeader({ query, onQueryChange, filterBy, onFilterChange }: PokedexHeaderProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement | null>(null);
 

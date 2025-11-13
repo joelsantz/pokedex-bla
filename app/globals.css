@@ -5,6 +5,10 @@
   --foreground: #171717;
   --primary: #DC0A2D;
   --primary-rgb: 220, 10, 45;
+  --canvas-charcoal: #222222;
+  --surface-card: #f7f6f4;
+  --accent-focus: #ff5a7a;
+  --accent-focus-rgb: 255, 90, 122;
 }
 
 @theme inline {

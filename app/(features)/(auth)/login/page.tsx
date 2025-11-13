@@ -55,7 +55,7 @@ export default function LoginPage() {
                 Username
                 <input
                   type="text"
-                  className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-base text-slate-800 shadow-inner shadow-slate-200 focus:border-transparent focus:outline-none focus:ring-4 focus:ring-[#ff5a7a]/40"
+                  className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-base text-slate-800 shadow-inner shadow-slate-200 focus:border-transparent focus:outline-none focus:ring-4 focus:ring-[rgba(var(--accent-focus-rgb),0.4)]"
                   placeholder="Trainer name"
                   autoComplete="username"
                   value={username}
@@ -67,7 +67,7 @@ export default function LoginPage() {
                 Password
                 <input
                   type="password"
-                  className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-base text-slate-800 shadow-inner shadow-slate-200 focus:border-transparent focus:outline-none focus:ring-4 focus:ring-[#ff5a7a]/40"
+                  className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-base text-slate-800 shadow-inner shadow-slate-200 focus:border-transparent focus:outline-none focus:ring-4 focus:ring-[rgba(var(--accent-focus-rgb),0.4)]"
                   placeholder="********"
                   autoComplete="current-password"
                   value={password}

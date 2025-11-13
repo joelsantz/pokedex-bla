@@ -42,9 +42,9 @@ export default async function PokemonDetailPage({ params }: PokemonDetailPagePro
   }
 
   return (
-    <main className="min-h-screen bg-[#222222] px-2 py-6 text-slate-900 sm:px-6 lg:px-10">
+    <main className="min-h-screen bg-[var(--canvas-charcoal)] px-2 py-6 text-slate-900 sm:px-6 lg:px-10">
       <div className="w-full">
-        <article className="overflow-hidden rounded-[40px] bg-[#f7f6f4] shadow-[0_35px_70px_rgba(0,0,0,0.55)]">
+        <article className="overflow-hidden rounded-[40px] bg-[var(--surface-card)] shadow-[0_35px_70px_rgba(0,0,0,0.55)]">
             <section className={`relative overflow-hidden rounded-t-[36px] bg-gradient-to-br ${pokemon.heroGradient} px-6 py-10 text-white sm:px-12`}>
               <div className="pointer-events-none absolute inset-y-0 right-0 -mr-24 hidden w-[28rem] opacity-15 sm:block">
                 <Image
