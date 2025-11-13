@@ -1,1 +1,1 @@
-export type { PokemonListItem } from "@/domain/pokemon/types";
+export type { PokemonListItem, PokemonListResponse } from "@/domain/pokemon/types";

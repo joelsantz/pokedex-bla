@@ -5,12 +5,11 @@ export type PokemonStat = {
 };
 
 export type PokemonDetail = {
+  id: number;
   slug: string;
   number: string;
   name: string;
-  region: string;
-  image: string;
-  accent: string;
+  image: string | null;
   heroGradient: string;
   themeColor: string;
   types: string[];
@@ -22,11 +21,17 @@ export type PokemonDetail = {
 };
 
 export type PokemonListItem = {
+  id: number;
   slug: string;
   number: string;
   name: string;
-  type: string;
-  region: string;
-  image: string;
-  accent: string;
+  image: string | null;
+  types: string[];
+};
+
+export type PokemonListResponse = {
+  page: number;
+  limit: number;
+  total: number;
+  results: PokemonListItem[];
 };
