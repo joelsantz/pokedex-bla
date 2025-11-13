@@ -59,3 +59,8 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Example Prompts I used
+
+- "Refactor `app/(features)/pokedex/components/PokemonCard.tsx` to ensure render stability under rapid pagination: profile expensive props, memoize derived sprites, and replace inline handlers with callbacks so React 19 stays concurrent-safe."
+- "Author a Vitest suite under `tests/routes/pokedex-route.test.ts` that exercises edge cases: mock the PokeAPI, assert pagination links, confirm search throttling, and validate error normalization for both success and failure responses."
+- "Enforce Tailwind-based visual consistency across every screen: audit `app/globals.css`, codify tokens for spacing, typography, and gradients, then adjust `PokedexHeader`, `PokemonGrid`, and login screens so shared utility classes produce identical vertical rhythm."
