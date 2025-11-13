@@ -67,7 +67,7 @@ export default function PokedexPage() {
 
   return (
     <main className="min-h-screen bg-[var(--canvas-charcoal)] px-3 pb-10 pt-8 text-slate-900 sm:px-6 lg:px-10">
-      <div className="w-full space-y-6 rounded-[40px] bg-[var(--surface-card)] shadow-[0_35px_70px_rgba(0,0,0,0.55)]">
+      <div className="w-full rounded-[40px] bg-[var(--surface-card)] shadow-[0_35px_70px_rgba(0,0,0,0.55)]">
         <PokedexHeader
           query={query}
           onQueryChange={setQuery}
