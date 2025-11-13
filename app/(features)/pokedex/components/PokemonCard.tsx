@@ -8,7 +8,7 @@ type PokemonCardProps = {
 export function PokemonCard({ pokemon }: PokemonCardProps) {
   return (
     <article className="rounded-[28px] border border-slate-100 bg-white/90 p-5 shadow-lg shadow-slate-200/70 transition hover:-translate-y-1 hover:shadow-2xl">
-      <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.35em] text-slate-400">
+      <div className="flex items-center justify-between text-[14px] uppercase text-slate-500">
         <span>{pokemon.type}</span>
         <span>{pokemon.number}</span>
       </div>
