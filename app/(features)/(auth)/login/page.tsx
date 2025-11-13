@@ -1,42 +1,103 @@
 'use client';
+
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+
+type FieldErrors = Partial<Record<'username' | 'password', string>>;
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [loading, setLoading] = useState(false);
+
+  const redirectParam = searchParams.get('redirectTo');
+  const redirectTarget =
+    redirectParam && redirectParam.startsWith('/') && !redirectParam.startsWith('//')
+      ? redirectParam
+      : null;
+
+  function clearFieldError(field: keyof FieldErrors) {
+    if (!fieldErrors[field]) {
+      return;
+    }
+
+    setFieldErrors(prev => {
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  }
+
+  function validateCredentials() {
+    const trimmedUsername = username.trim();
+    const errors: FieldErrors = {};
+
+    if (!trimmedUsername) {
+      errors.username = 'Username is required.';
+    } else if (trimmedUsername.length < 3) {
+      errors.username = 'Username must be at least 3 characters long.';
+    }
+
+    if (!password) {
+      errors.password = 'Password is required.';
+    } else if (password.length < 4) {
+      errors.password = 'Password must be at least 4 characters long.';
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
 
-    if (!username || !password) {
-      setError('Please enter both username and password.');
+    if (!validateCredentials()) {
       return;
     }
 
     setLoading(true);
     try {
-      const res = await fetch('/api/auth/login', {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username: username.trim(), password }),
       });
 
-      if (res.ok) {
-        router.push('/'); 
-      } else {
-        setError('Invalid credentials');
+      const payload: { message?: string; errors?: FieldErrors } | null = await response
+        .json()
+        .catch(() => null);
+
+      if (!response.ok) {
+        setFieldErrors(prev => ({ ...prev, ...(payload?.errors ?? {}) }));
+        setError(payload?.message ?? 'Invalid credentials.');
+        return;
       }
+
+      setFieldErrors({});
+      router.replace(redirectTarget ?? '/pokedex');
     } catch {
-      setError('Something went wrong. Try again.');
+      setError('Unable to reach the server. Please try again.');
     } finally {
       setLoading(false);
     }
   }
+
+  const baseInputClasses =
+    'mt-2 w-full rounded-3xl border bg-slate-50 px-5 py-4 text-base text-slate-800 shadow-inner shadow-slate-200 focus:border-transparent focus:outline-none focus:ring-4 focus:ring-[rgba(var(--accent-focus-rgb),0.4)]';
+
+  const usernameInputClass = fieldErrors.username
+    ? `${baseInputClasses} border-red-300 focus:ring-red-200`
+    : `${baseInputClasses} border-slate-200`;
+
+  const passwordInputClass = fieldErrors.password
+    ? `${baseInputClasses} border-red-300 focus:ring-red-200`
+    : `${baseInputClasses} border-slate-200`;
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-br from-[var(--primary)] via-[var(--primary)] to-[#ff2150] px-4 py-6">
@@ -49,33 +110,67 @@ export default function LoginPage() {
                 <p className="mt-3 text-base text-slate-500">Sign in to keep exploring the Pokedex.</p>
               </div>
 
-              <form onSubmit={onSubmit} className="space-y-7">
-                <label className="block text-sm font-semibold text-slate-600">
-                  Username
+              {redirectTarget && (
+                <div className="mb-6 rounded-3xl border border-amber-100 bg-amber-50 px-5 py-3 text-sm text-amber-900">
+                  Please sign in to continue to <span className="font-semibold">{redirectTarget}</span>.
+                </div>
+              )}
+
+              <form onSubmit={onSubmit} className="space-y-6" noValidate>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-600" htmlFor="username">
+                    Username
+                  </label>
                   <input
+                    id="username"
                     type="text"
-                    className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-base text-slate-800 shadow-inner shadow-slate-200 focus:border-transparent focus:outline-none focus:ring-4 focus:ring-[rgba(var(--accent-focus-rgb),0.4)]"
+                    className={usernameInputClass}
                     placeholder="Trainer name"
                     autoComplete="username"
                     value={username}
-                    onChange={e => setUsername(e.target.value)}
+                    onChange={event => {
+                      setUsername(event.target.value);
+                      clearFieldError('username');
+                      setError('');
+                    }}
+                    aria-invalid={Boolean(fieldErrors.username)}
+                    aria-describedby={fieldErrors.username ? 'username-error' : undefined}
                   />
-                </label>
+                  {fieldErrors.username && (
+                    <p id="username-error" className="mt-2 text-sm font-medium text-red-600">
+                      {fieldErrors.username}
+                    </p>
+                  )}
+                </div>
 
-                <label className="block text-sm font-semibold text-slate-600">
-                  Password
+                <div>
+                  <label className="block text-sm font-semibold text-slate-600" htmlFor="password">
+                    Password
+                  </label>
                   <input
+                    id="password"
                     type="password"
-                    className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-base text-slate-800 shadow-inner shadow-slate-200 focus:border-transparent focus:outline-none focus:ring-4 focus:ring-[rgba(var(--accent-focus-rgb),0.4)]"
+                    className={passwordInputClass}
                     placeholder="********"
                     autoComplete="current-password"
                     value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    onChange={event => {
+                      setPassword(event.target.value);
+                      clearFieldError('password');
+                      setError('');
+                    }}
+                    aria-invalid={Boolean(fieldErrors.password)}
+                    aria-describedby={fieldErrors.password ? 'password-error' : undefined}
                   />
-                </label>
+                  {fieldErrors.password && (
+                    <p id="password-error" className="mt-2 text-sm font-medium text-red-600">
+                      {fieldErrors.password}
+                    </p>
+                  )}
+                </div>
 
                 {error && (
-                  <p className="text-sm font-medium text-red-600" role="alert">
+                  <p className="text-sm font-medium text-red-600" role="alert" aria-live="polite">
                     {error}
                   </p>
                 )}

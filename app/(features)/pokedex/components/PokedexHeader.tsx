@@ -1,6 +1,7 @@
 'use client';
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export type SearchFilter = "number" | "name";
@@ -19,7 +20,10 @@ const filterOptions: Array<{ label: string; value: SearchFilter; icon: string }>
 ];
 
 export function PokedexHeader({ query, onQueryChange, filterBy, onFilterChange }: PokedexHeaderProps) {
+  const router = useRouter();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
   const filterRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -38,6 +42,22 @@ export function PokedexHeader({ query, onQueryChange, filterBy, onFilterChange }
   }, [isFilterOpen]);
 
   const activeFilter = filterOptions.find(option => option.value === filterBy) ?? filterOptions[0];
+
+  async function handleLogout() {
+    setSignOutError(null);
+    setIsSigningOut(true);
+    try {
+      const response = await fetch("/api/auth/logout", { method: "POST" });
+      if (!response.ok) {
+        throw new Error("Failed to sign out");
+      }
+      router.replace("/login");
+    } catch {
+      setSignOutError("Unable to sign out. Please try again.");
+    } finally {
+      setIsSigningOut(false);
+    }
+  }
 
   return (
     <header className="rounded-t-[38px] bg-[var(--primary)] px-8 py-8 text-white">
@@ -74,8 +94,22 @@ export function PokedexHeader({ query, onQueryChange, filterBy, onFilterChange }
               GITHUB
             </a>
           </nav>
+          <button
+            type="button"
+            onClick={handleLogout}
+            disabled={isSigningOut}
+            className="rounded-full bg-white px-4 py-2 text-[0.65rem] font-black uppercase tracking-[0.3em] text-[var(--primary)] text-opacity-90 shadow-[0_8px_20px_rgba(0,0,0,0.2)] transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:opacity-60"
+          >
+            {isSigningOut ? "Signing out..." : "Sign Out"}
+          </button>
         </div>
       </div>
+
+      {signOutError && (
+        <p className="mt-2 text-xs font-semibold text-amber-100" role="alert">
+          {signOutError}
+        </p>
+      )}
 
       <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center">
         <div className="flex flex-1 items-center gap-3 rounded-full bg-white px-5 py-3 text-[var(--primary)] shadow-[inset_0_4px_12px_rgba(0,0,0,0.15)]">
