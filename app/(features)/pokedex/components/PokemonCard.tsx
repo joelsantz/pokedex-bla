@@ -38,7 +38,7 @@ export function PokemonCard({ pokemon }: PokemonCardProps) {
         </div>
 
         <div className="text-center">
-          <p className="text-lg font-semibold text-slate-800">{pokemon.name}</p>
+          <p className="text-lg text-slate-800">{pokemon.name}</p>
         </div>
       </article>
     </Link>

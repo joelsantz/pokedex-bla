@@ -11,7 +11,7 @@ export function PokemonGrid({ pokemon }: PokemonGridProps) {
   }
 
   return (
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
       {pokemon.map(item => (
         <PokemonCard key={item.slug} pokemon={item} />
       ))}

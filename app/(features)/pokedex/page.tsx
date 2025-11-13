@@ -6,7 +6,7 @@ import type { PokemonListItem, PokemonListResponse } from './components/types';
 import { PokedexHeader, type SearchFilter } from './components/PokedexHeader';
 import { PokemonGrid } from './components/PokemonGid';
 
-const PAGE_SIZE = 9;
+const PAGE_SIZE = 20;
 
 export default function PokedexPage() {
   const [query, setQuery] = useState('');
