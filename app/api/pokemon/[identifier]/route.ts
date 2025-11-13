@@ -79,8 +79,11 @@ function mapStats(stats: PokeApiPokemon["stats"]): PokemonStat[] {
   }));
 }
 
-export async function GET(_request: Request, { params }: { params: { identifier: string } }) {
-  const identifier = params.identifier;
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ identifier: string }> }
+) {
+  const { identifier } = await params;
   const pokemonResponse = await fetch(`${POKE_API_BASE}/pokemon/${identifier}`, {
     next: { revalidate: 120 },
   });
