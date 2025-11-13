@@ -1,12 +1,44 @@
+'use client';
+
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+
+export type SearchFilter = "number" | "name";
 
 type PokedexHeaderProps = {
   query: string;
   onQueryChange: (value: string) => void;
   total: number;
+  filterBy: SearchFilter;
+  onFilterChange: (value: SearchFilter) => void;
 };
 
-export function PokedexHeader({ query, onQueryChange, total }: PokedexHeaderProps) {
+const filterOptions: Array<{ label: string; value: SearchFilter; icon: string }> = [
+  { label: "Number", value: "number", icon: "/tag.svg" },
+  { label: "Name", value: "name", icon: "/text_format.svg" },
+];
+
+export function PokedexHeader({ query, onQueryChange, total, filterBy, onFilterChange }: PokedexHeaderProps) {
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const filterRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!isFilterOpen) {
+      return;
+    }
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setIsFilterOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [isFilterOpen]);
+
+  const activeFilter = filterOptions.find(option => option.value === filterBy) ?? filterOptions[0];
+
   return (
     <header className="rounded-t-[38px] bg-[var(--primary)] px-8 py-8 text-white">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -28,7 +60,7 @@ export function PokedexHeader({ query, onQueryChange, total }: PokedexHeaderProp
         </div>
       </div>
 
-      <div className="mt-6 flex flex-col gap-4 sm:flex-row">
+      <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center">
         <div className="flex flex-1 items-center gap-3 rounded-full bg-white px-5 py-3 text-[var(--primary)] shadow-[inset_0_4px_12px_rgba(0,0,0,0.15)]">
           <div className="relative flex-1">
             <span className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2">
@@ -66,12 +98,57 @@ export function PokedexHeader({ query, onQueryChange, total }: PokedexHeaderProp
             )}
           </div>
         </div>
-        <button
-          type="button"
-          className="flex items-center justify-center rounded-full border border-white/50 bg-white/20 px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-white transition hover:bg-white/30"
-        >
-          Sort
-        </button>
+        <div ref={filterRef} className="relative flex-shrink-0">
+          <button
+            type="button"
+            onClick={() => setIsFilterOpen(prev => !prev)}
+            aria-label={`Filter by ${activeFilter.label}`}
+            aria-expanded={isFilterOpen}
+            className="flex h-14 w-14 items-center justify-center rounded-full border border-white/50 bg-white text-[var(--primary)] shadow-[0_10px_25px_rgba(0,0,0,0.25)] transition hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+          >
+            <Image
+              src={activeFilter.icon}
+              alt=""
+              width={24}
+              height={24}
+              className="h-6 w-6"
+              aria-hidden="true"
+              priority={activeFilter.value === "name"}
+            />
+          </button>
+          {isFilterOpen && (
+            <div className="absolute right-0 z-20 mt-3 w-48 rounded-[26px] bg-[var(--primary)] p-1 shadow-[0_25px_55px_rgba(0,0,0,0.45)]">
+              <div className="rounded-[22px] bg-white px-4 py-4">
+                <p className="text-sm font-semibold uppercase tracking-tight text-[var(--primary)]">Filter by:</p>
+                <div className="mt-4 flex flex-col gap-2">
+                  {filterOptions.map(option => {
+                    const selected = option.value === filterBy;
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => {
+                          onFilterChange(option.value);
+                          setIsFilterOpen(false);
+                        }}
+                        className="flex items-center gap-3 rounded-full px-1 py-2 text-left text-sm font-semibold text-slate-900 transition hover:text-[var(--primary)]"
+                      >
+                        <span
+                          className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${
+                            selected ? "border-[var(--primary)]" : "border-slate-300"
+                          }`}
+                        >
+                          {selected && <span className="h-2 w-2 rounded-full bg-[var(--primary)]" />}
+                        </span>
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

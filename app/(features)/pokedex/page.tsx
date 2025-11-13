@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { PokedexHeader } from './components/PokedexHeader';
+import { PokedexHeader, type SearchFilter } from './components/PokedexHeader';
 import { PokemonGrid } from './components/PokemonGid';
 import { PokemonListItem } from './components/types';
 
@@ -82,21 +82,36 @@ const pokemonList: PokemonListItem[] = [
 
 export default function PokedexPage() {
   const [query, setQuery] = useState('');
+  const [filterBy, setFilterBy] = useState<SearchFilter>('name');
 
   const filteredPokemon = useMemo(() => {
-    if (!query.trim()) {
+    const trimmedQuery = query.trim().toLowerCase();
+    if (!trimmedQuery) {
       return pokemonList;
     }
 
-    return pokemonList.filter(pokemon => pokemon.name.toLowerCase().includes(query.trim().toLowerCase()));
-  }, [query]);
+    if (filterBy === 'name') {
+      return pokemonList.filter(pokemon => pokemon.name.toLowerCase().includes(trimmedQuery));
+    }
+
+    const numericQuery = trimmedQuery.replace(/^#/, '');
+    return pokemonList.filter(pokemon =>
+      pokemon.number.replace(/^#/, '').toLowerCase().includes(numericQuery),
+    );
+  }, [filterBy, query]);
 
   return (
     <main className="min-h-screen bg-[#111111] px-2 py-6 text-slate-900 sm:px-6 lg:px-10">
       <div className="w-full">
         <div className="relative rounded-[40px] bg-gradient-to-br from-[#b8001b] via-[#d8002c] to-[#ff2150] p-1 shadow-[0_35px_70px_rgba(0,0,0,0.55)]">
           <div className="rounded-[38px] bg-[#f7f6f4] overflow-hidden">
-            <PokedexHeader query={query} onQueryChange={setQuery} total={filteredPokemon.length} />
+            <PokedexHeader
+              query={query}
+              onQueryChange={setQuery}
+              total={filteredPokemon.length}
+              filterBy={filterBy}
+              onFilterChange={setFilterBy}
+            />
 
             <section className="rounded-b-[36px] bg-white px-6 py-8 sm:px-10 sm:py-12">
               <div className="flex flex-wrap items-end justify-between gap-4">
