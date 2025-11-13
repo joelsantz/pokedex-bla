@@ -1,84 +1,9 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { pokemonListItems } from '@/domain/pokemon/data';
 import { PokedexHeader, type SearchFilter } from './components/PokedexHeader';
 import { PokemonGrid } from './components/PokemonGid';
-import { PokemonListItem } from './components/types';
-
-const pokemonList: PokemonListItem[] = [
-  {
-    number: '#001',
-    name: 'Bulbasaur',
-    type: 'Grass',
-    region: 'Kanto',
-    image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-    accent: 'from-emerald-50 to-emerald-200',
-  },
-  {
-    number: '#004',
-    name: 'Charmander',
-    type: 'Fire',
-    region: 'Kanto',
-    image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png',
-    accent: 'from-orange-50 to-orange-200',
-  },
-  {
-    number: '#007',
-    name: 'Squirtle',
-    type: 'Water',
-    region: 'Kanto',
-    image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png',
-    accent: 'from-sky-50 to-sky-200',
-  },
-  {
-    number: '#012',
-    name: 'Butterfree',
-    type: 'Bug',
-    region: 'Kanto',
-    image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/12.png',
-    accent: 'from-violet-50 to-violet-200',
-  },
-  {
-    number: '#025',
-    name: 'Pikachu',
-    type: 'Electric',
-    region: 'Kanto',
-    image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png',
-    accent: 'from-yellow-50 to-orange-100',
-  },
-  {
-    number: '#039',
-    name: 'Jigglypuff',
-    type: 'Fairy',
-    region: 'Kanto',
-    image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/39.png',
-    accent: 'from-pink-50 to-rose-100',
-  },
-  {
-    number: '#063',
-    name: 'Abra',
-    type: 'Psychic',
-    region: 'Kanto',
-    image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/63.png',
-    accent: 'from-amber-50 to-yellow-100',
-  },
-  {
-    number: '#092',
-    name: 'Gastly',
-    type: 'Ghost',
-    region: 'Kanto',
-    image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/92.png',
-    accent: 'from-slate-100 to-purple-200',
-  },
-  {
-    number: '#133',
-    name: 'Eevee',
-    type: 'Normal',
-    region: 'Kanto',
-    image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/133.png',
-    accent: 'from-amber-50 to-amber-200',
-  },
-];
 
 export default function PokedexPage() {
   const [query, setQuery] = useState('');
@@ -87,15 +12,15 @@ export default function PokedexPage() {
   const filteredPokemon = useMemo(() => {
     const trimmedQuery = query.trim().toLowerCase();
     if (!trimmedQuery) {
-      return pokemonList;
+      return pokemonListItems;
     }
 
     if (filterBy === 'name') {
-      return pokemonList.filter(pokemon => pokemon.name.toLowerCase().includes(trimmedQuery));
+      return pokemonListItems.filter(pokemon => pokemon.name.toLowerCase().includes(trimmedQuery));
     }
 
     const numericQuery = trimmedQuery.replace(/^#/, '');
-    return pokemonList.filter(pokemon =>
+    return pokemonListItems.filter(pokemon =>
       pokemon.number.replace(/^#/, '').toLowerCase().includes(numericQuery),
     );
   }, [filterBy, query]);
