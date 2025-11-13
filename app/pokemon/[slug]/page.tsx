@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 
 import { PokemonStatList } from "../../(features)/pokemon/components/PokemonStatList";
 import { PokemonTypeBadge } from "../../(features)/pokemon/components/PokemonTypeBadge";
+import { PokemonFormViewer } from "../../(features)/pokemon/components/PokemonFormViewer";
 import type { PokemonDetail } from "@/domain/pokemon/types";
 
 type PokemonDetailPageProps = {
@@ -92,26 +93,12 @@ export default async function PokemonDetailPage({ params }: PokemonDetailPagePro
                 ))}
               </div>
               <div className="mt-6 flex items-center justify-center">
-                <div className="flex h-72 w-72 items-center justify-center sm:h-80 sm:w-80">
-                  {pokemon.image ? (
-                    <Image
-                      src={pokemon.image}
-                      alt={pokemon.name}
-                      width={320}
-                      height={320}
-                      priority
-                      className="object-contain drop-shadow-[0_25px_45px_rgba(0,0,0,0.35)]"
-                    />
-                  ) : (
-                    <Image
-                      src="/Pokeball.svg"
-                      alt="Pokéball placeholder"
-                      width={200}
-                      height={200}
-                      className="opacity-70"
-                    />
-                  )}
-                </div>
+                <PokemonFormViewer
+                  variants={pokemon.evolutions}
+                  fallbackName={pokemon.name}
+                  fallbackImage={pokemon.image}
+                  currentSlug={pokemon.slug}
+                />
               </div>
             </div>
           </section>

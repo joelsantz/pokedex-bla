@@ -22,7 +22,7 @@ export function PokemonCard({ pokemon }: PokemonCardProps) {
         </div>
 
         <div className="flex justify-center">
-          <div className="flex h-32 w-full items-center justify-center rounded-[24px] border border-slate-100 bg-gradient-to-b from-white to-slate-50">
+          <div className="flex h-40 w-full items-center justify-center rounded-[24px] border border-slate-100 bg-gradient-to-b from-white to-slate-50">
             {pokemon.image ? (
               <Image
                 src={pokemon.image}

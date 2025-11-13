@@ -16,6 +16,12 @@ export default function PokedexPage() {
   const [pokemons, setPokemons] = useState<PokemonListItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [searchResults, setSearchResults] = useState<PokemonListItem[] | null>(null);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+
+  const trimmedQuery = query.trim();
+  const isSearching = trimmedQuery.length > 0;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -47,21 +53,68 @@ export default function PokedexPage() {
     return () => controller.abort();
   }, [page]);
 
+  useEffect(() => {
+    if (!isSearching) {
+      setSearchResults(null);
+      setSearchError(null);
+      setSearchLoading(false);
+      return undefined;
+    }
+
+    const controller = new AbortController();
+
+    async function fetchSearchResults() {
+      setSearchLoading(true);
+      setSearchError(null);
+      try {
+        const searchParams = new URLSearchParams({
+          search: trimmedQuery,
+          filterBy,
+          limit: `${PAGE_SIZE}`,
+        });
+        const response = await fetch(`/api/pokedex?${searchParams.toString()}`, {
+          signal: controller.signal,
+        });
+        if (!response.ok) {
+          throw new Error('Failed to search Pok\u00e9mon.');
+        }
+        const data = (await response.json()) as PokemonListResponse;
+        setSearchResults(data.results);
+        setSearchError(data.results.length === 0 ? 'No Pok\u00e9mon matched that search.' : null);
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') {
+          setSearchResults([]);
+          setSearchError('Unable to find Pok\u00e9mon. Please try again.');
+        }
+      } finally {
+        setSearchLoading(false);
+      }
+    }
+
+    fetchSearchResults();
+
+    return () => controller.abort();
+  }, [filterBy, isSearching, trimmedQuery]);
+
   const filteredPokemon = useMemo(() => {
-    const trimmedQuery = query.trim().toLowerCase();
-    if (!trimmedQuery) {
+    const normalizedQuery = trimmedQuery.toLowerCase();
+    if (!normalizedQuery) {
       return pokemons;
     }
 
     if (filterBy === 'name') {
-      return pokemons.filter(pokemon => pokemon.name.toLowerCase().includes(trimmedQuery));
+      return pokemons.filter(pokemon => pokemon.name.toLowerCase().includes(normalizedQuery));
     }
 
-    const numericQuery = trimmedQuery.replace(/^#/, '');
+    const numericQuery = normalizedQuery.replace(/^#/, '');
     return pokemons.filter(pokemon =>
       pokemon.number.replace(/^#/, '').toLowerCase().includes(numericQuery),
     );
-  }, [filterBy, query, pokemons]);
+  }, [filterBy, pokemons, trimmedQuery]);
+
+  const displayedPokemon = isSearching ? searchResults ?? [] : filteredPokemon;
+  const isBusy = isSearching ? searchLoading : loading;
+  const activeError = isSearching ? searchError : error;
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
@@ -71,7 +124,7 @@ export default function PokedexPage() {
         <PokedexHeader
           query={query}
           onQueryChange={setQuery}
-          total={filteredPokemon.length}
+          total={displayedPokemon.length}
           filterBy={filterBy}
           onFilterChange={setFilterBy}
         />
@@ -82,33 +135,35 @@ export default function PokedexPage() {
               <p className="text-xs uppercase tracking-[0.4em] text-slate-400">Pokemon List</p>
             </div>
             <p className="text-sm text-slate-400">
-              Showing <span className="font-semibold text-slate-600">{filteredPokemon.length}</span> results
+              Showing <span className="font-semibold text-slate-600">{displayedPokemon.length}</span> results
             </p>
           </div>
 
-          {error && <p className="text-sm font-medium text-red-500">{error}</p>}
+          {activeError && <p className="text-sm font-medium text-red-500">{activeError}</p>}
 
-          {loading ? (
-            <p className="text-center text-sm text-slate-400">Loading Pokémon...</p>
+          {isBusy ? (
+            <p className="text-center text-sm text-slate-400">
+              {isSearching ? 'Searching the Pok\u00e9dex...' : 'Loading Pokémon...'}
+            </p>
           ) : (
-            <PokemonGrid pokemon={filteredPokemon} />
+            <PokemonGrid pokemon={displayedPokemon} />
           )}
 
           <div className="flex items-center justify-between gap-4">
             <button
               type="button"
-              disabled={page === 1 || loading}
+              disabled={page === 1 || loading || isSearching}
               onClick={() => setPage(prev => Math.max(prev - 1, 1))}
               className="rounded-full border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-40"
             >
               Previous
             </button>
             <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
-              Page {page} / {totalPages}
+              {isSearching ? 'Search Results' : `Page ${page} / ${totalPages}`}
             </p>
             <button
               type="button"
-              disabled={page >= totalPages || loading}
+              disabled={page >= totalPages || loading || isSearching}
               onClick={() => setPage(prev => Math.min(prev + 1, totalPages))}
               className="rounded-full border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-40"
             >

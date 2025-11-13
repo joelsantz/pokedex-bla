@@ -18,6 +18,14 @@ export type PokemonDetail = {
   moves: string[];
   description: string;
   stats: PokemonStat[];
+  forms: PokemonVariant[];
+  evolutions: PokemonVariant[];
+};
+
+export type PokemonVariant = {
+  slug: string;
+  name: string;
+  image: string | null;
 };
 
 export type PokemonListItem = {
