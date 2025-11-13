@@ -45,8 +45,25 @@ export function PokedexHeader({ query, onQueryChange, total }: PokedexHeaderProp
               value={query}
               onChange={event => onQueryChange(event.target.value)}
               placeholder="Search"
-              className="w-full bg-transparent pl-8 text-base tracking-wide text-[rgba(var(--primary-rgb),0.9)] placeholder:text-[rgba(var(--primary-rgb),0.6)] focus:outline-none"
+              className="w-full bg-transparent pl-8 pr-8 text-base tracking-wide text-[rgba(var(--primary-rgb),0.9)] placeholder:text-[rgba(var(--primary-rgb),0.6)] focus:outline-none"
             />
+            {query.length > 0 && (
+              <button
+                type="button"
+                onClick={() => onQueryChange("")}
+                aria-label="Clear search"
+                className="absolute right-0 top-1/2 -translate-y-1/2 rounded-full p-1 text-[var(--primary)] transition hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgba(var(--primary-rgb),0.5)]"
+              >
+                <Image
+                  src="/close.svg"
+                  alt=""
+                  width={20}
+                  height={20}
+                  className="h-5 w-5"
+                  aria-hidden="true"
+                />
+              </button>
+            )}
           </div>
         </div>
         <button
