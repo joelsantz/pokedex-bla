@@ -28,31 +28,29 @@ export default function PokedexPage() {
   return (
     <main className="min-h-screen bg-[#111111] px-2 py-6 text-slate-900 sm:px-6 lg:px-10">
       <div className="w-full">
-        <div className="relative rounded-[40px] bg-gradient-to-br from-[#b8001b] via-[#d8002c] to-[#ff2150] p-1 shadow-[0_35px_70px_rgba(0,0,0,0.55)]">
-          <div className="rounded-[38px] bg-[#f7f6f4] overflow-hidden">
-            <PokedexHeader
-              query={query}
-              onQueryChange={setQuery}
-              total={filteredPokemon.length}
-              filterBy={filterBy}
-              onFilterChange={setFilterBy}
-            />
+        <div className="rounded-[40px] bg-[#f7f6f4] shadow-[0_35px_70px_rgba(0,0,0,0.55)]">
+          <PokedexHeader
+            query={query}
+            onQueryChange={setQuery}
+            total={filteredPokemon.length}
+            filterBy={filterBy}
+            onFilterChange={setFilterBy}
+          />
 
-            <section className="rounded-b-[36px] bg-white px-6 py-8 sm:px-10 sm:py-12">
-              <div className="flex flex-wrap items-end justify-between gap-4">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.4em] text-slate-400">Pokemon List</p>
-                </div>
-                <p className="text-sm text-slate-400">
-                  Showing <span className="font-semibold text-slate-600">{filteredPokemon.length}</span> results
-                </p>
+          <section className="rounded-b-[36px] bg-white px-6 py-8 sm:px-10 sm:py-12">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.4em] text-slate-400">Pokemon List</p>
               </div>
+              <p className="text-sm text-slate-400">
+                Showing <span className="font-semibold text-slate-600">{filteredPokemon.length}</span> results
+              </p>
+            </div>
 
-              <div className="mt-8">
-                <PokemonGrid pokemon={filteredPokemon} />
-              </div>
-            </section>
-          </div>
+            <div className="mt-8">
+              <PokemonGrid pokemon={filteredPokemon} />
+            </div>
+          </section>
         </div>
       </div>
     </main>
